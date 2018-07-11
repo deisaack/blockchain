@@ -1,0 +1,64 @@
+extends layout
+
+block content
+  .container-fluid
+    h1 #{__('Tokens')}
+    - var peers = {1: 'A', 2: 'B', 3: 'C'}
+    - each peer, chain in peers
+      h3 #{__('Peer')} #{peer}
+      .row.row-horizon
+        - var blocks = []
+        - blocks.push({block: 1, chain: chain, nonce: 139358, txs: [{value: '25.00', from: 'Harum', to: 'Marvin'},{value: '4.27', from: 'Elizabeth', to: 'Jane'},{value: '19.22', from: 'Mutinda', to: 'Lydia'},{value: '106.44', from: 'Lady Diana', to: 'Collins'},{value: '6.42', from: 'Maye', to: 'Lagat'}], previous: '0000000000000000000000000000000000000000000000000000000000000000'})
+        - blocks.push({block: 2, chain: chain, nonce: 39207, txs: [{value: '97.67', from: 'Job', to: 'Mutwiri'},{value: '48.61', from: 'Gadafi', to: 'Muriithi Ian'},{value: '6.15', from: 'Benedict', to: 'Shila Shish Karau'},{value: '10.44', from: 'Cheloti', to: 'BrianKibet'},{value: '88.32', from: 'rk3law', to: 'Marvin Carter'},{value: '45.00', from: 'Hudson', to: 'Gorman'},{value: '92.00', from: 'Vasquez', to: 'Apone'}], previous: '00000c52990ee86de55ec4b9b32beefd745d71675dc0eddfbc7b88336e2e296b'})
+        - blocks.push({block: 3, chain: chain, nonce: 13804, txs: [{value: '10.00', from: 'Peina', to: 'Silali'},{value: '5.00', from: 'Steve', to: 'Vinny'},{value: '20.00', from: 'Zeu', to: 'Grace'}], previous: '000078be183417844c14a9251ca246fb15df1074019873f5d85c1a6f4311d4e0'})
+        - blocks.push({block: 4, chain: chain, nonce: 20688, txs: [{value: '62.19', from: 'Osoro', to: 'Ogola'},{value: '867.96', from: 'Mike Njoroge', to: 'Jermine'},{value: '276.15', from: 'Hamara', to: 'Gloria'},{value: '97.13', from: 'Gikonyo', to: 'Sam'},{value: '119.63', from: 'Faith Julius', to: 'brian Gacheru'}], previous: '0000c2c95f54a49b4f2bee7056a7dc3b7c1a408706c848b520e20eac75aaceb0'})
+        - blocks.push({block: 5, chain: chain, nonce: 33083, txs: [{value: '14.12', from: 'Denis Seroney', to: 'Cyril Tumbo'},{value: '2,760.29', from: 'Brian Ademba', to: 'Victor Aengwo'},{value: '413.78', from: 'Bethwel', to: 'Bownface Otis'}], previous: '0000c03019ed59586405750968888fb65256e82492480d9fe0a6bd2f5e86b5ca'})
+        each block in blocks
+          .col-xs-7
+            include includes/tokenblock.jade
+
+  script.
+    $(function() {
+      setup(1, 1);
+      setup(2, 1);
+      setup(3, 1);
+      setup(4, 1);
+      setup(5, 1);
+
+      setup(1, 2);
+      setup(2, 2);
+      setup(3, 2);
+      setup(4, 2);
+      setup(5, 2);
+
+      setup(1, 3);
+      setup(2, 3);
+      setup(3, 3);
+      setup(4, 3);
+      setup(5, 3);
+    });
+
+    function getText(block, chain) {
+      var s = $('#block'+block+'chain'+chain+'number').val() +
+              $('#block'+block+'chain'+chain+'nonce').val();
+      for (var x=0; $('#block'+block+'chain'+chain+'tx'+x+'value').length > 0; x++) {
+        s = s + $('#block'+block+'chain'+chain+'tx'+x+'value').val() +
+                $('#block'+block+'chain'+chain+'tx'+x+'from').val() +
+                $('#block'+block+'chain'+chain+'tx'+x+'to').val();
+      }
+      s = s + $('#block'+block+'chain'+chain+'previous').val();
+      return s;
+    }
+
+    function setup(block, chain) {
+      updateHash(block, chain);
+      $('#block'+block+'chain'+chain+'mineButton').click(function(e) {
+          e.preventDefault();
+          var l = Ladda.create(this);
+          l.start();
+          setTimeout(function() {
+              mine(block, chain, true);
+              l.stop();
+            }, 250); // give UI time to update
+        });
+    }
