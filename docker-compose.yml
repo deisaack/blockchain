@@ -1,6 +1,6 @@
 version: '2'
 services:
-  blockchain:
+  blockchain1:
     build: .
     image: blockchain:latest
     ports:
